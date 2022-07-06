@@ -3,13 +3,19 @@
 import random
 import operator
 import re
+import os
 
 predictions = []
 choices = ['r', 'p', 's']
 last_five = []
 machine_move = ""
+move_holder = ""
 uinput = ""
 scores = [0,0]
+
+#clear console
+clear = lambda: os.system('clear')
+clear()
 
 print("#" * 50)
 print(" " * 8 + "Simple AI Rock, Paper and Scissors")
@@ -17,7 +23,7 @@ print(" " * 15 + "By: Niko Kilponen")
 print("#" * 50)
 print("\n")
 
-print("(r)ock, (p)aper, (s)cissors")
+print("(r)ock, (p)aper, (s)cissors or (e)xit")
 
 def user_input():	
 	uinput = input("Your choice?") #get user input
@@ -28,8 +34,11 @@ def user_input():
 		
 		if len(last_five) > 5: #if last_five list contains more than 5 items
 			del last_five[0] #delete first item from last_five list
-		
+			
 		predict(uinput)
+	
+	elif uinput == "e":
+		quit()
 	
 	else: #if user input was incorrect
 		print("Please use 'r', 'p' or 's'")
@@ -77,7 +86,7 @@ def predict(uinput):
 			if match and predictions[i][1] > highest_match: #find most used pattern
 				highest_match = predictions[i][1]
 				best_match = predictions[i] #add most used pattern to best match
-				machine_next = best_match[0][-1] #add machine prediction for next round
+				move_holder = best_match[0][-1] #add machine prediction for next round
 
 		for i in range(0,5):
 			five_str += str(last_five[i])
@@ -90,9 +99,10 @@ def predict(uinput):
 				temp_list.append(pattern_match)
 				temp_index = i #store index of found pattern for further use
 	
-		if len(temp_list) > 0: #if patterns has been found
+		if len(temp_list) > 0: #if pattern has been found
 			predictions[temp_index][1] += 1 #add +1 to spesific pattern
 			machine_move = machine_next
+			machine_next = move_holder
 			game(uinput, machine_move)
 			
 		else: #if no pattern has been found, make new pattern to predictions
@@ -157,7 +167,13 @@ def game(uinput, machine_move):
 			
 	if scores[1] != 0: #check for division by zero
 		winrate = (scores[0] / (scores[0] + scores[1])) * 100 #calculate winrate	
-		
+	
+	elif scores[0] > 0 & scores[1] == 0:
+		winrate = 100
+		 
+	#clear console
+	clear()
+	
 	print("\n")
 	print("#" * 50)
 	print("\n")
